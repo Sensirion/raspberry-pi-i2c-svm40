@@ -145,6 +145,9 @@ int16_t svm40_read_measured_values_as_integers_with_raw_parameters(
  * svm40_set_temperature_offset_for_rht_measurements_raw() - Sets the T-Offset
  * for the temperature compensation of the RHT algorithm.
  *
+ * @note Only available for SVM40 firmware versions >= 2.0. Please update your
+ * SVM40 module if necessary.
+ *
  * @param t_offset Temperature offset in degrees celsius with a scaling of 200.
  *
  * @return 0 on success, an error code otherwise
@@ -154,6 +157,9 @@ int16_t svm40_set_temperature_offset_for_rht_measurements_raw(int16_t t_offset);
 /**
  * svm40_set_temperature_offset_for_rht_measurements() - Sets the T-Offset for
  * the temperature compensation of the RHT algorithm.
+ *
+ * @note Only available for SVM40 firmware versions >= 2.0. Please update your
+ * SVM40 module if necessary.
  *
  * @param t_offset Temperature offset in degrees celsius.
  *
@@ -165,6 +171,9 @@ int16_t svm40_set_temperature_offset_for_rht_measurements(float t_offset);
  * svm40_get_temperature_offset_for_rht_measurements_raw() - Gets the T-Offset
  * for the temperature compensation of the RHT algorithm.
  *
+ * @note Only available for SVM40 firmware versions >= 2.0. Please update your
+ * SVM40 module if necessary.
+ *
  * @param t_offset Temperature offset in degrees celsius with a scaling of 200.
  *
  * @return 0 on success, an error code otherwise
@@ -175,6 +184,9 @@ svm40_get_temperature_offset_for_rht_measurements_raw(int16_t* t_offset);
 /**
  * svm40_get_temperature_offset_for_rht_measurements() - Gets the T-Offset for
  * the temperature compensation of the RHT algorithm.
+ *
+ * @note Only available for SVM40 firmware versions >= 2.0. Please update your
+ * SVM40 module if necessary.
  *
  * @param t_offset Temperature offset in degrees celsius.
  *
