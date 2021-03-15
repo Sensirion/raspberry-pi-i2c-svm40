@@ -1,9 +1,4 @@
 /*
- * I2C-Generator: 0.2.0
- * Yaml Version: 0.3.0
- * Template Version: 0.7.0
- */
-/*
  * Copyright (c) 2021, Sensirion AG
  * All rights reserved.
  *
@@ -40,24 +35,19 @@
 #include "sensirion_i2c_hal.h"
 #include "svm40_i2c.h"
 
-/*
- * TO USE CONSOLE OUTPUT (PRINTF) YOU MAY NEED TO ADAPT THE INCLUDE ABOVE OR
- * DEFINE IT ACCORDING TO YOUR PLATFORM:
+/* TO USE CONSOLE OUTPUT (printf) YOU MAY NEED TO ADAPT THE
+ * INCLUDE ABOVE OR DEFINE IT ACCORDING TO YOUR PLATFORM.
  * #define printf(...)
  */
-
-// TODO: DRIVER_GENERATOR Add missing commands and make prints more pretty
 
 int main(void) {
     int16_t error = 0;
 
     sensirion_i2c_hal_init();
 
-    unsigned char serial_number[26];
+    uint8_t serial_number[26];
     uint8_t serial_number_size = 26;
-
-    error = svm40_get_serial_number(serial_number, serial_number_size);
-
+    error = svm40_get_serial_number(&serial_number[0], serial_number_size);
     if (error) {
         printf("Error executing svm40_get_serial_number(): %i\n", error);
     } else {
@@ -71,27 +61,30 @@ int main(void) {
     uint8_t hardware_minor;
     uint8_t protocol_major;
     uint8_t protocol_minor;
-
     error = svm40_get_version(&firmware_major, &firmware_minor, &firmware_debug,
                               &hardware_major, &hardware_minor, &protocol_major,
                               &protocol_minor);
-
     if (error) {
         printf("Error executing svm40_get_version(): %i\n", error);
     } else {
-        printf("Firmware major: %u\n", firmware_major);
-        printf("Firmware minor: %u\n", firmware_minor);
-        printf("Firmware debug: %i\n", firmware_debug);
-        printf("Hardware major: %u\n", hardware_major);
-        printf("Hardware minor: %u\n", hardware_minor);
-        printf("Protocol major: %u\n", protocol_major);
-        printf("Protocol minor: %u\n", protocol_minor);
+        printf("Firmware: %i.%i Debug: %i\n", firmware_major, firmware_minor,
+               firmware_debug);
+        printf("Hardware: %i.%i\n", hardware_major, hardware_minor);
+        printf("Protocol: %i.%i\n", protocol_major, protocol_minor);
+    }
+
+    float t_offset;
+    error = svm40_get_temperature_offset_for_rht_measurements(&t_offset);
+    if (error) {
+        printf("Error executing "
+               "svm40_get_temperature_offset_for_rht_measurements(): %i\n",
+               error);
+    } else {
+        printf("Temperature Offset: %0.2f °C\n", t_offset);
     }
 
     // Start Measurement
-
     error = svm40_start_continuous_measurement();
-
     if (error) {
         printf("Error executing svm40_start_continuous_measurement(): %i\n",
                error);
@@ -99,14 +92,23 @@ int main(void) {
 
     for (;;) {
         // Read Measurement
-        // TODO: DRIVER_GENERATOR check and update measurement interval
         sensirion_i2c_hal_sleep_usec(1000000);
-        // TODO: DRIVER_GENERATOR Add scaling and offset to printed measurement
-        // values
+        float voc_index;
+        float humidity;
+        float temperature;
+        error = svm40_read_measured_values(&voc_index, &humidity, &temperature);
+        if (error) {
+            printf("Error executing svm40_read_measured_values_as_integers(): "
+                   "%i\n",
+                   error);
+        } else {
+            printf("Voc index: %0.1f\n", voc_index);
+            printf("Humidity: %0.2f %%RH\n", humidity);
+            printf("Temperature: %0.2f °C\n", temperature);
+        }
     }
 
     error = svm40_stop_measurement();
-
     if (error) {
         printf("Error executing svm40_stop_measurement(): %i\n", error);
     }
