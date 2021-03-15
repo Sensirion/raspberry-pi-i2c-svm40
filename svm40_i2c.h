@@ -90,6 +90,26 @@ int16_t svm40_read_measured_values_as_integers(int16_t* voc_index,
                                                int16_t* temperature);
 
 /**
+ * svm40_read_measured_values() - Returns the new measurement results.
+ *
+ * @note This command is only available in measurement mode. The firmware
+ * updates the measurement values every second. Polling data with a faster
+ * sampling rate will return the same values. The first measurement is available
+ * 1 second after the start measurement command is issued. Any readout prior to
+ * this will return zero initialized values.
+ *
+ * @param voc_index VOC algorithm output.
+ *
+ * @param humidity Compensated ambient humidity in % RH.
+ *
+ * @param temperature Compensated ambient temperature in degrees celsius.
+ *
+ * @return 0 on success, an error code otherwise
+ */
+int16_t svm40_read_measured_values(float* voc_index, float* humidity,
+                                   float* temperature);
+
+/**
  * svm40_read_measured_values_as_integers_with_raw_parameters() - Returns the
  * new measurement results as integers with raw values added.
  *
@@ -122,24 +142,45 @@ int16_t svm40_read_measured_values_as_integers_with_raw_parameters(
     uint16_t* raw_voc_ticks, int16_t* raw_humidity, int16_t* raw_temperature);
 
 /**
- * svm40_set_temperature_offset_for_rht_measurements() - Sets the T-Offset for
- * the temperature compensation of the RHT algorithm.
+ * svm40_set_temperature_offset_for_rht_measurements_raw() - Sets the T-Offset
+ * for the temperature compensation of the RHT algorithm.
  *
  * @param t_offset Temperature offset in degrees celsius with a scaling of 200.
  *
  * @return 0 on success, an error code otherwise
  */
-int16_t svm40_set_temperature_offset_for_rht_measurements(int16_t t_offset);
+int16_t svm40_set_temperature_offset_for_rht_measurements_raw(int16_t t_offset);
+
+/**
+ * svm40_set_temperature_offset_for_rht_measurements() - Sets the T-Offset for
+ * the temperature compensation of the RHT algorithm.
+ *
+ * @param t_offset Temperature offset in degrees celsius.
+ *
+ * @return 0 on success, an error code otherwise
+ */
+int16_t svm40_set_temperature_offset_for_rht_measurements(float t_offset);
+
+/**
+ * svm40_get_temperature_offset_for_rht_measurements_raw() - Gets the T-Offset
+ * for the temperature compensation of the RHT algorithm.
+ *
+ * @param t_offset Temperature offset in degrees celsius with a scaling of 200.
+ *
+ * @return 0 on success, an error code otherwise
+ */
+int16_t
+svm40_get_temperature_offset_for_rht_measurements_raw(int16_t* t_offset);
 
 /**
  * svm40_get_temperature_offset_for_rht_measurements() - Gets the T-Offset for
  * the temperature compensation of the RHT algorithm.
  *
- * @param t_offset Temperature offset in degrees celsius with a scaling of 200.
+ * @param t_offset Temperature offset in degrees celsius.
  *
  * @return 0 on success, an error code otherwise
  */
-int16_t svm40_get_temperature_offset_for_rht_measurements(int16_t* t_offset);
+int16_t svm40_get_temperature_offset_for_rht_measurements(float* t_offset);
 
 /**
  * svm40_set_voc_algorithm_tuning_parameters() - Sets the parameters to
